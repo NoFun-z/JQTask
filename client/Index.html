@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <script src="jquery.js"></script>
+    <script src="jquery-ui.js"></script>
+    <link rel="stylesheet" href="jquery-ui.css">
+    <script src="https://kit.fontawesome.com/cea4e16fa3.js" crossorigin="anonymous"></script>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-y: hidden;
+        }
+
+        /*Mixes*/
+        .LoginPage,
+        .RegisterPage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 20px;
+            background-color: #313138;
+        }
+
+        .LoginContent,
+        .RegisterContent {
+            background-color: #cfcde3;
+            padding: 30px 50px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .LoginPage h1,
+        .RegisterPage h1 {
+            text-align: center;
+        }
+
+        .loginImg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loginImg img {
+            max-width: 150px;
+            max-height: 150px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            max-width: 250px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .loginInputs,
+        .registerInputs {
+            width: 100%;
+            padding: 10px;
+            max-width: 245px;
+            margin-bottom: 25px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .registerInputs {
+            max-width: 235px;
+        }
+
+        .login-button,
+        .register-button {
+            width: 100%;
+            background-color: #47474e;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .login-button:hover,
+        .register-button:hover {
+            background-color: #6a6a7b;
+        }
+
+        .registerbtn:hover,
+        .loginbtn:hover {
+            cursor: pointer;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+
+        /*************************************/
+
+        /*General content-container stylings*/
+        .content-container {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            background-image: url('/client/Images/content-bkg.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+
+        .content-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        /*****************************************/
+
+        /*Navbar stylings*/
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(19, 19, 19, 0.9);
+            color: #c8b6b6;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .nav-title,
+        .user-logs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-title img {
+            width: 30px;
+            height: 30px;
+        }
+
+        /****************************************/
+
+        /* Workspace dropdown styling */
+        .workspace-dropdown-container {
+            position: relative;
+            display: inline-block;
+            width: 220px;
+        }
+
+        .workspace-dropdown-header,
+        .btnLogout {
+            cursor: pointer;
+            padding: 10px;
+            width: 100px;
+        }
+
+        .btnLogout {
+            width: 50px;
+            margin-right: 20px;
+            padding-right: 8px;
+        }
+
+        .workspace-dropdown-header:hover,
+        .btnLogout:hover {
+            background-color: #555;
+        }
+
+        .workspace-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 100%;
+            margin-top: 10px;
+            z-index: 1;
+            border-radius: 2px;
+        }
+
+        .workspace-dropdown-content::-webkit-scrollbar {
+            width: 6px;
+            background-color: transparent;
+        }
+
+        .workspace-dropdown-content::-webkit-scrollbar-thumb {
+            background-color: rgba(201, 152, 152, 0.5);
+            border-radius: 3px;
+        }
+
+        .workspace-dropdown-content::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(223, 200, 200, 0.7);
+
+        }
+
+        .workspace-dropdown-content span {
+            display: block;
+            padding: 10px;
+        }
+
+        .workspace-dropdown-content span:hover {
+            background-color: #555;
+        }
+
+        .add-list-board {
+            border-top: #c8b6b6 1px solid;
+            font-weight: bold;
+        }
+
+        .add-list-board:hover {
+            cursor: pointer;
+        }
+
+        /****************************************************************/
+
+        /*Side bar stylings*/
+        .sidebar::before {
+            content: "";
+            background-color: rgba(19, 19, 19, 0.9);
+            backdrop-filter: blur(5px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            color: #b4a7a7;
+            transform: translateX(-85%);
+            opacity: 1;
+            position: fixed;
+            transition: 0.3s;
+        }
+
+        .listboard-title {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-bottom: 15px;
+        }
+
+        .title-text {
+            margin-left: 20px;
+        }
+
+        .sidebar-button {
+            position: absolute;
+            cursor: pointer;
+            color: #b4a7a7;
+            font-size: 20px;
+            right: 10px;
+            top: 10px;
+        }
+
+        .listboard-members {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 0 20px;
+        }
+
+        .members-list {
+            padding: 7px 0 40px 12px;
+            list-style: none;
+        }
+
+        .members-list li {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .add-members {
+            display: none;
+            margin-right: 20px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .add-members:hover {
+            color: #181717;
+            background-color: #6a6262;
+            cursor: pointer;
+        }
+
+        .remove-member-icon {
+            color: #963838;
+            display: inline-block;
+            position: absolute;
+            right: 22px;
+            top: 5px;
+            padding: 2px 4px;
+            border-radius: 5px;
+        }
+
+        .remove-member-icon:hover {
+            background-color: #6a6262;
+            color: #181717;
+        }
+
+        .content {
+            margin-left: 50px;
+            margin-top: 58px;
+            padding: 20px;
+            transition: margin-left 0.15s ease-in-out;
+            height: 100vh;
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+        .sidebar.hide {
+            transform: translateX(-85%);
+        }
+
+        .avatar {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #6a6262;
+            color: #181717;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            margin: 5px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .title-text-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            gap: 15px;
+        }
+
+        .unjoin-icon {
+            padding: 5px;
+            border-radius: 5px;
+            color: #963838;
+        }
+
+        .unjoin-icon:hover {
+            background-color: #6a6262;
+            color: #181717;
+            cursor: pointer;
+        }
+
+        .unjoin-hover {
+            width: 100%;
+            display: block;
+            position: absolute;
+            background-color: #181717;
+            border-radius: 10px;
+            color: #bab0b0;
+            padding: 10px;
+            top: 25px;
+        }
+
+        .add-tasklist {
+            display: none;
+            padding: 10px 0 10px 20px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .add-tasklist:hover {
+            background-color: #bab0b0;
+            color: #181717;
+            cursor: pointer;
+        }
+
+        /*****************************************************************/
+
+        /*Task-lists stylings*/
+        .task-list-container {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            width: 100%;
+        }
+
+        .task-list-wrapper {
+            display: flex;
+            height: 100%;
+        }
+
+        .task-list-container::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+        }
+
+        .task-list-container::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+
+        }
+
+        .task-list {
+            padding: 10px 10px 0 10px;
+            width: 300px;
+            margin-right: 20px;
+            margin-bottom: 5px;
+            background-color: #242121;
+            color: #c8b6b6;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+
+
+        /* Style for the title of each task list */
+        .task-list h2 {
+            font-size: 20px;
+            margin: 0;
+            padding: 10px;
+        }
+
+        /* Style for the description of each task list */
+        .task-list p {
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+            padding: 0 10px 10px;
+        }
+
+        .task-list-end-container {
+            padding: 10px 5px;
+            display: block;
+        }
+
+        .task-list-end {
+            padding: 7px 5px;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .task-list-end:hover {
+            background-color: #555;
+            cursor: pointer;
+        }
+
+        .tasks {
+            overflow-y: auto;
+            list-style-type: none;
+            padding-left: 10px;
+            margin: 0;
+        }
+
+        .tasks::-webkit-scrollbar {
+            width: 6px;
+            background-color: transparent;
+        }
+
+        .tasks::-webkit-scrollbar-thumb {
+            background-color: rgba(201, 152, 152, 0.5);
+            border-radius: 3px;
+        }
+
+        .tasks::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(223, 200, 200, 0.7);
+
+        }
+
+        .task {
+            position: relative;
+            word-wrap: break-word;
+            background-color: #2f2727;
+            padding: 10px 0 0 0;
+            margin: 10px;
+            margin-left: 0;
+            margin-top: 0;
+            border-radius: 10px;
+        }
+
+        .task:hover {
+            background-color: #635555;
+            cursor: pointer;
+        }
+
+        .task p {
+            color: #c8b6b6;
+        }
+
+        /*Task-list-mixes stylings*/
+        .task-list-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 10px 20px 10px;
+            font-weight: bold;
+        }
+
+        .task-list-mix-container {
+            position: relative;
+            width: 180px;
+            transform: translateX(80%);
+        }
+
+        .task-list-mix {
+            margin-right: 10px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-list-mix:hover {
+            background-color: #555;
+        }
+
+        .task-list-options {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            width: 100%;
+            margin-top: 10px;
+            right: -40px;
+            border-radius: 2px;
+            font-weight: normal;
+            font-size: small;
+        }
+
+        .task-list-options span {
+            display: block;
+            padding: 10px;
+        }
+
+        .task-list-options span:hover {
+            background-color: #555;
+            cursor: pointer;
+        }
+
+        .task-info {
+            max-width: calc(100% - 30px);
+        }
+
+        .task-edit,
+        .task-delete {
+            display: none;
+            position: absolute;
+            color: #b4a7a7;
+            top: 5px;
+            right: 5px;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .task-delete {
+            color: #963838;
+            top: 32px;
+            right: 7px;
+        }
+
+        .task-edit:hover,
+        .task-delete:hover {
+            background-color: #b4a7a7;
+            color: #635555;
+            cursor: pointer;
+        }
+
+        /***********************************/
+
+        /*****Dialog-mixes*****/
+        #notification-dialog,
+        #add-members-dialog,
+        #add-tasks-dialog,
+        #add-listboard-dialog,
+        #notification-rm-dialog,
+        #notification-rm2-dialog,
+        #edit-tasks-dialog,
+        #notification-rmtask-dialog,
+        #add-tasklist-dialog {
+            display: none;
+        }
+
+        #add-members-dialog label,
+        #add-tasks-dialog label,
+        #add-listboard-dialog label,
+        #edit-tasks-dialog label,
+        #add-tasklist-dialog label {
+            display: block;
+            font-weight: bold;
+            color: #c8b6b6;
+            margin-bottom: 5px;
+        }
+
+        #add-members-dialog input[type="text"],
+        #add-tasks-dialog input[type="text"],
+        #add-listboard-dialog input[type="text"],
+        #edit-tasks-dialog input[type="text"],
+        #add-tasklist-dialog input[type="text"] {
+            width: 92%;
+            padding: 8px;
+            background-color: #222;
+            color: #c8b6b6;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        #add-members-dialog input[type="text"]:focus,
+        #add-tasks-dialog input[type="text"]:focus,
+        #add-listboard-dialog input[type="text"]:focus,
+        #edit-tasks-dialog input[type="text"]:focus,
+        #add-tasklist-dialog input[type="text"]:focus {
+            outline: none;
+            border: 1px solid #bc7070;
+        }
+
+        #dialog-task-datepicker:hover,
+        #dialog-edit-task-datepicker:hover {
+            cursor: pointer;
+        }
+
+
+        /**********************************/
+
+        /********************************************************/
+        /*********************/
+        /*********************/
+        /*********************/
+    </style>
+    <script>
+        //Global Variables
+        let user = null;
+        let authToken = null;
+        let listBoards = null;
+        let selectedListBoard = null;
+
+        function verifyUser() {
+            const storedUser = localStorage.getItem('user');
+
+            if (storedUser) {
+                user = JSON.parse(storedUser);
+            }
+
+            if (user == null) {
+                $(".ContentPage").hide();
+                $(".LoginPage").show();
+            } else {
+                $(".LoginPage").hide();
+                authToken = user.token;
+                $(".ContentPage").show();
+                $(".username").html(user.userName);
+            }
+        }
+
+        //Add auto authorization for login request
+        function makeAuthenticatedRequestWithParams(method, url, data, successCallback, errorCallback) {
+            if (!authToken) {
+                $(".ContentPage").hide();
+                Login();
+                alert("Unauthorized, please try to login again!");
+                return;
+            }
+
+            $.ajax({
+                type: method,
+                url: url,
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                },
+                success: successCallback,
+                error: errorCallback
+            });
+        }
+
+        function makeAuthenticatedRequest(method, url, successCallback, errorCallback) {
+            if (!authToken) {
+                $(".ContentPage").hide();
+                Login();
+                alert("Unauthorized, please try to login again!");
+                return;
+            }
+
+            $.ajax({
+                type: method,
+                url: url,
+                contentType: "application/json",
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                },
+                success: successCallback,
+                error: errorCallback
+            });
+        }
+
+        function login() {
+            var username = $("#Lusername").val();
+            var password = $("#Lpassword").val();
+
+            // Basic validation
+            if (!username || !password) {
+                $("#L-error-message").text("Please enter both username and password.");
+                return;
+            }
+            else {
+                var loginData = {
+                    Username: username,
+                    Password: password
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:5000/api/account/login",
+                    data: JSON.stringify(loginData),
+                    contentType: "application/json",
+                    success: (data) => {
+                        let user = data;
+                        localStorage.setItem('user', JSON.stringify(user));
+                        verifyUser();
+                        fetchListBoardData();
+                    },
+                    error: (jqXHR, textStatus, errorThrown) => {
+                        alert("Error logging in:\n" + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function register() {
+            var email = $("#Remail").val();
+            var username = $("#Rusername").val();
+            var password = $("#Rpassword").val();
+
+            // Basic validation
+            if (!username || !password || !email) {
+                $("#R-error-message").text("Please enter email, username and password.");
+                return;
+            }
+            else {
+                var registerData = {
+                    Username: username,
+                    Password: password,
+                    Email: email
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: 'http://localhost:5000/api/account/register',
+                    data: JSON.stringify(registerData),
+                    contentType: "application/json",
+                    success: () => {
+                        $(".LoginPage").show();
+                        $(".RegisterPage").hide();
+                        alert("Register Successfully")
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Error logging in:\n" + errorThrown);
+                    }
+                });
+            }
+        }
+
+        function Register() {
+            $(".LoginPage").hide();
+            $(".RegisterPage").show();
+        }
+
+        function Login() {
+            $(".LoginPage").show();
+            $(".RegisterPage").hide();
+        }
+
+        //Retrieve and store the selectedlb in local storage to the global variable
+        function fillLBData() {
+            let selectedListBoardPre = localStorage.getItem('selectedListBoard');
+            if (selectedListBoardPre != null && selectedListBoardPre != 'undefined' && selectedListBoardPre != "") {
+                let selectedLB = JSON.parse(selectedListBoardPre);
+                selectedListBoard = selectedLB;
+            } else {
+                selectedListBoard = null;
+            }
+        }
+
+        function fetchListBoardData() {
+            makeAuthenticatedRequest("GET", "http://localhost:5000/api/ListBoard",
+                function (data) {
+                    listBoards = data;
+                    populateListBoardData();
+                    populateUnjoinListBoardIcon();
+                    populateSelectedListBoard();
+                    populateListBoardMembers();
+                    populateTaskLists();
+
+                    $(document).on('click', function (event) {
+                        // Hide all task-list-options that are not the target of the click event
+                        $(".task-list-options").not(event.target).hide();
+                    });
+
+                },
+                function (jqXHR, textStatus, errorThrown) {
+                    // Handle errors here
+                    alert("Error logging in:\n" + errorThrown);
+                }
+            );
+        }
+
+
+        function populateListBoardData() {
+            // Store the data in the selectedlistboard localstorage in the variable first
+            fillLBData();
+
+            // Check if the selectedListBoard exists in local storage
+            if (selectedListBoard == null) {
+                localStorage.setItem('selectedListBoard', JSON.stringify(listBoards[0]));
+            }
+            //Reset the localstorage again with the refetched data and filter by the prev selectedlb ID
+            else {
+                localStorage.setItem('selectedListBoard', JSON.stringify(listBoards.find(l => l.id == selectedListBoard.id)));
+            }
+
+            fillLBData();
+
+            let workspaceSpan = "";
+            listBoards.forEach(lb => {
+                workspaceSpan += `<span data-listboard='${JSON.stringify(lb)}'>${lb.name}</span>`;
+            });
+            workspaceSpan += `<span onClick="AddListBoard()" class="add-list-board"><i class="fa-solid fa-plus"></i>&nbsp;&nbsp;Add ListBoard </span>`;
+            $("#workspaceDropdownContent").html(workspaceSpan);
+        }
+
+        function changeSelectedListBoard(listboard) {
+            localStorage.setItem('selectedListBoard', JSON.stringify(listboard));
+            fillLBData();
+            populateUnjoinListBoardIcon();
+            populateSelectedListBoard();
+            populateListBoardMembers();
+            populateTaskLists();
+            // Show a notification dialog
+            const notificationMessage = `List board "${listboard.name}" has been selected.`;
+            $("#notification-message").text(notificationMessage);
+            $("#notification-dialog").dialog({
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Ok: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+
+        function populateSelectedListBoard() {
+            $('.title-text').html(selectedListBoard.name);
+            const icon = $('.unjoin-icon');
+            const hoverText = $('.unjoin-hover');
+
+            // Add a mouseenter event handler to the icon
+            icon.on('mouseenter', function () {
+                // Show the hover text when the mouse enters the icon
+                hoverText.css('display', 'block');
+            });
+
+            // Add a mouseleave event handler to the icon
+            icon.on('mouseleave', function () {
+                // Hide the hover text when the mouse leaves the icon
+                hoverText.css('display', 'none');
+            });
+        }
+
+        function populateUnjoinListBoardIcon() {
+            let unjoindiv = "";
+            if (selectedListBoard.buyerIDs[0].userID != user.email) {
+                unjoindiv += `
+                    <span onClick="LeaveListBoard('${user.email}')" class="unjoin-icon" id="trashicon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                    <span class="unjoin-hover" id="trashicon-hover" style="display: none;">Leave listboard</span>
+                `;
+            }
+            else if (selectedListBoard.buyerIDs[0].userID === user.email) {
+                unjoindiv += `
+                    <span onClick="RemoveListBoard()" class="unjoin-icon" id="trashicon2"><i class="fa-solid fa-trash-can"></i></span>
+                    <span class="unjoin-hover" id="trashicon-hover2" style="display: none;">Delete listboard</span>
+                `;
+            }
+
+            $('.unjoin-listboard').html(unjoindiv);
+        }
+
+        function populateListBoardMembers() {
+            let memberList = "";
+            selectedListBoard.buyerIDs.forEach(mem => {
+                const userName = `${mem.userName}`;
+                const firstTwoChars = userName.substring(0, 2);
+                const uppercasedChars = firstTwoChars.toUpperCase();
+                memberList += `
+                    <li>                  
+                        <span class="avatar">${uppercasedChars}</span>
+                        <div>
+                            <span style="font-weight: bold;">${mem.userName}</span>
+                            <span style="display: block; color: #8c8080; font-size: small;">${mem.userID}</span>
+                        </div>
+                        ${selectedListBoard.buyerIDs[0].userID == user.email && mem.userID != user.email ?
+                        `<div class="remove-member-icon" style="display: none;" onClick="RemoveUser('${mem.userID}')"><i class="fa-solid fa-xmark"></i></div>`
+                        : ``}
+                    </li>
+                    `;
+
+                $(".members-list").html(memberList);
+            })
+        }
+
+        function populateTaskLists() {
+            let taskLists = "";
+            selectedListBoard.tasklists.forEach(tasklist => {
+                taskLists +=
+                    `
+                    <div class="task-list">
+                        <div class="task-list-title">
+                            <span class="task-list-tilt">${tasklist.title}</span>
+                            <div class="task-list-mix-container" id="task-list-mix-container">
+                                <span class="task-list-mix" id="task-list-mix">&#8943;</span>
+                                <div class="task-list-options" id="task-list-options">
+                                    <span onClick="AddTask(${tasklist.tempID})">Add a task</span>
+                                    ${tasklist.tasks.length > 1 ?
+                        `<span onClick="SortByDueDate(${tasklist.tempID}, 'SortByDueDate Asc')">SortByDueDate Asc</span>
+                                    <span onClick="SortByDueDate(${tasklist.tempID}, 'SortByDueDate Desc')">SortByDueDate Desc</span>` :
+                        ''}
+                                    <span onClick="RemoveTask(${tasklist.tempID})">Remove tasklist</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sortable" class="sortable">
+                            <ul class="tasks">
+                                ${tasklist.tasks.map(task =>
+                            `
+                                    <li id=${task.tempID} taskID=${tasklist.tempID} class="task">
+                                        <div class="task-info">
+                                            <p>${task.description}</p>
+                                            <p>DueDate: ${task.dueDate}</p>
+                                        </div>
+                                        <div class="task-edit" onClick="EditTask('${tasklist.tempID}', '${task.tempID}')">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </div>
+                                        <div class="task-delete" onClick="DeleteTask('${tasklist.tempID}', '${task.tempID}')">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </div>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <div class="task-list-end-container">
+                            <span class="task-list-end" onClick="AddTask(${tasklist.tempID})"><i class="fa-solid fa-plus"></i>&nbsp; Add a task</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            $(".task-list-wrapper").html(taskLists);
+
+            $('.task-list-mix').on('click', function (e) {
+                e.stopPropagation();
+                var dropdownContent = $(this).siblings(".task-list-options");
+                $(".task-list-options").not(dropdownContent).hide();
+                dropdownContent.toggle();
+            });
+
+            $('.task').hover(
+                function () {
+                    // Mouse-in event: Show the .task-edit element within the current .task
+                    $(this).find('.task-edit').show();
+                    $(this).find('.task-delete').show();
+                },
+                function () {
+                    // Mouse-out event: Hide the .task-edit element within the current .task
+                    $(this).find('.task-edit').hide();
+                    $(this).find('.task-delete').hide();
+                }
+            );
+
+            $(".tasks").sortable({
+                axis: "y", containment: "#sortable",
+                update: function (event, ui) {
+                    var taskArr = [];
+                    var tasklistID = $(this).sortable("toArray", { attribute: "taskID" })
+                    var sortedArr = $(this).sortable("toArray", { attribute: "id" })
+                    var taskListID = tasklistID[0];
+
+                    for (var i = 0; i < sortedArr.length; i++) {
+                        taskArr.push(sortedArr[i]);
+                    }
+
+                    var reOrderTaskDTO = {
+                        listBoardID: parseInt(selectedListBoard.id),
+                        taskListID: parseInt(taskListID),
+                        newOrder: taskArr
+                    }
+
+                    $.ajax({
+                        type: "PUT",
+                        url: 'http://localhost:5000/api/ListBoard/SortTasks',
+                        data: JSON.stringify(reOrderTaskDTO),
+                        contentType: "application/json",
+                        headers: {
+                            Authorization: `Bearer ${authToken}`
+                        },
+                        success: () => {
+                            alert('Tasks reordered!')
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert("Error sorting tasks:\n" + errorThrown);
+                        }
+                    });
+                }
+            })
+        }
+
+        function AddListBoard() {
+            $("#add-listboard-dialog").dialog({
+                modal: true,
+                draggable: false,
+                beforeClose: function (event, ui) {
+                    fetchListBoardData();
+                },
+                buttons: {
+                    Add: function () {
+                        var Name = $('#dialog-lb-message').val();
+
+                        if (Name !== "") {
+                            $.ajax({
+                                type: "POST",
+                                url: "http://localhost:5000/api/ListBoard",
+                                data: JSON.stringify(Name),
+                                contentType: "application/json",
+                                headers: {
+                                    Authorization: `Bearer ${authToken}`
+                                },
+                                dataType: "json",
+                                success: (data) => {
+                                    $(this).dialog("close");
+                                    $('#dialog-lb-message').val("");
+                                    //changeSelectedListBoard(selectedListBoard);
+                                },
+                                error: (jqXHR, textStatus, errorThrown) => {
+                                    alert("ListBoard name already existed:\n" + errorThrown);
+                                    $('#dialog-lb-message').val("");
+                                }
+                            });
+                        } else {
+                            alert("ListBoard name cannot be empty.");
+                        }
+                    }
+                },
+            });
+        }
+
+        function RemoveListBoard() {
+            $("#notification-rm-message").text("Delete this listboard will remove all the incompleted tasks and all members within it. Do you still wish to proceed?");
+            $("#notification-rm-dialog").dialog({
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Proceed: function () {
+                        var id = parseInt(selectedListBoard.id);
+
+                        $.ajax({
+                            type: "DELETE",
+                            url: "http://localhost:5000/api/ListBoard/" + id,
+                            contentType: "application/json",
+                            headers: {
+                                Authorization: `Bearer ${authToken}`
+                            },
+                            dataType: "json",
+                            success: (data) => {
+                                $(this).dialog("close");
+                            },
+                            error: (jqXHR, textStatus, errorThrown) => {
+                                console.log("Error deleting the listboard:\n" + errorThrown);
+                            }
+                        });
+                    }
+                },
+            });
+        }
+
+        function LeaveListBoard(userEmail) {
+            $("#notification-rm2-message").text("Leaving this list board means you will no longer have access to all the incomplete tasks and members. Do you still wish to proceed?");
+            $("#notification-rm2-dialog").dialog({
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Proceed: function () {
+                        var removeUserDTO = {
+                            listBoardID: parseInt(selectedListBoard.id),
+                            buyerID: userEmail
+                        }
+
+                        $.ajax({
+                            type: "DELETE",
+                            url: "http://localhost:5000/api/ListBoard/RemoveUser",
+                            data: JSON.stringify(removeUserDTO),
+                            contentType: "application/json",
+                            headers: {
+                                Authorization: `Bearer ${authToken}`
+                            },
+                            dataType: "json",
+                            success: (data) => {
+                                $(this).dialog("close");
+                            },
+                            error: (jqXHR, textStatus, errorThrown) => {
+                                console.log("Error removing the member:\n" + errorThrown);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        // RemoveUser function
+        function RemoveUser(userEmail) {
+            $("#notification-rm2-message").text("The user you are removing will not be able to access this listboard or you. Do you still wish to proceed?")
+
+            $("#notification-rm2-dialog").dialog({
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Proceed: function () {
+                        var removeUserDTO = {
+                            listBoardID: parseInt(selectedListBoard.id),
+                            buyerID: userEmail
+                        }
+
+                        $.ajax({
+                            type: "DELETE",
+                            url: "http://localhost:5000/api/ListBoard/RemoveUser",
+                            data: JSON.stringify(removeUserDTO),
+                            contentType: "application/json",
+                            headers: {
+                                Authorization: `Bearer ${authToken}`
+                            },
+                            dataType: "json",
+                            success: (data) => {
+                                $(this).dialog("close");
+                            },
+                            error: (jqXHR, textStatus, errorThrown) => {
+                                console.log("Error removing the member:\n" + errorThrown);
+                            }
+                        });
+                    }
+                },
+            });
+        }
+
+        function AddTaskList() {
+            $("#add-tasklist-dialog").dialog({
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Add: function () {
+                        var Title = $('#dialog-tl-message').val();
+
+                        var addTaskListDTO = {
+                            listBoardID: parseInt(selectedListBoard.id),
+                            title: Title
+                        }
+
+                        if (Title !== "") {
+                            $.ajax({
+                                type: "POST",
+                                url: "http://localhost:5000/api/ListBoard/AddTaskList",
+                                data: JSON.stringify(addTaskListDTO),
+                                contentType: "application/json",
+                                headers: {
+                                    Authorization: `Bearer ${authToken}`
+                                },
+                                dataType: "json",
+                                success: (data) => {
+                                    $(this).dialog("close");
+                                    $('#dialog-tl-message').val("");
+                                    //changeSelectedListBoard(selectedListBoard);
+                                },
+                                error: (jqXHR, textStatus, errorThrown) => {
+                                    alert("TaskList already existed:\n" + errorThrown);
+                                    $('#dialog-tl-message').val("");
+                                }
+                            });
+                        } else {
+                            alert("Tasklist title cannot be empty.");
+                        }
+                    }
+                },
+            });
+        }
+
+        function AddTask(TaskListID) {
+            $("#add-tasks-dialog").dialog({
+                open: function (event, ui) {
+                    // Initialize the date picker for the dialog's input field
+                    $('#dialog-task-datepicker').datepicker();
+                },
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Add: function () {
+                        var description = $('#dialog-task-message').val();
+                        var dueDate = $('#dialog-task-datepicker').val();
+                        var addTaskDTO = {
+                            listBoardID: parseInt(selectedListBoard.id),
+                            taskListID: parseInt(TaskListID),
+                            description: description,
+                            dueDate: dueDate
+                        }
+
+                        if (description !== "" && dueDate !== "") {
+                            var currentDate = new Date();
+                            var selectedDueDate = new Date(dueDate);
+
+                            if (selectedDueDate < currentDate) {
+                                alert("Due date cannot be in the past.");
+                                $("#dialog-task-message").val("");
+                                $('#dialog-task-datepicker').val("");
+                            } else {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "http://localhost:5000/api/ListBoard/AddTask",
+                                    data: JSON.stringify(addTaskDTO),
+                                    contentType: "application/json",
+                                    headers: {
+                                        Authorization: `Bearer ${authToken}`
+                                    },
+                                    dataType: "json",
+                                    success: (data) => {
+                                        $(this).dialog("close");
+                                        $("#dialog-task-message").val("");
+                                        $('#dialog-task-datepicker').val("");
+                                    },
+                                    error: (jqXHR, textStatus, errorThrown) => {
+                                        alert("Error adding a task to the listboard's tasklist:\n" + errorThrown);
+                                        $("#dialog-task-message").val("");
+                                        $('#dialog-task-datepicker').val("");
+                                    }
+                                });
+                            }
+                        } else {
+                            alert("Task description and due date cannot be empty.");
+                        }
+                    }
+                },
+            });
+        }
+
+        function EditTask(TaskListID, TaskID) {
+            $("#edit-tasks-dialog").dialog({
+                open: function (event, ui) {
+                    // Initialize the date picker for the dialog's input field
+                    $('#dialog-edit-task-datepicker').datepicker();
+                },
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Update: function () {
+                        var description = $('#dialog-edit-task-message').val();
+                        var dueDate = $('#dialog-edit-task-datepicker').val();
+                        var updateTaskDTO = {
+                            listBoardID: parseInt(selectedListBoard.id),
+                            taskListID: parseInt(TaskListID),
+                            taskID: parseInt(TaskID),
+                            description: description,
+                            dueDate: dueDate
+                        }
+
+                        if (description !== "" && dueDate !== "") {
+                            var currentDate = new Date();
+                            var selectedDueDate = new Date(dueDate);
+
+                            if (selectedDueDate < currentDate) {
+                                alert("Due date cannot be in the past.");
+                                $("#dialog-edit-task-message").val("");
+                                $('#dialog-edit-task-datepicker').val("");
+                            } else {
+                                $.ajax({
+                                    type: "PUT",
+                                    url: "http://localhost:5000/api/ListBoard/EditTask",
+                                    data: JSON.stringify(updateTaskDTO),
+                                    contentType: "application/json",
+                                    headers: {
+                                        Authorization: `Bearer ${authToken}`
+                                    },
+                                    dataType: "json",
+                                    success: (data) => {
+                                        $(this).dialog("close");
+                                        $("#dialog-edit-task-message").val("");
+                                        $('#dialog-edit-task-datepicker').val("");
+                                    },
+                                    error: (jqXHR, textStatus, errorThrown) => {
+                                        alert("Error editting the task:\n" + errorThrown);
+                                        $("#dialog-edit-task-message").val("");
+                                        $('#dialog-edit-task-datepicker').val("");
+                                    }
+                                });
+                            }
+                        } else {
+                            alert("Task description and due date cannot be empty.");
+                        }
+                    }
+                },
+            });
+        }
+
+        function DeleteTask(TaskListID, TaskID) {
+            $('#notification-rmtask-message').text("This will remove a task, or mark it as completed. Do you still wish to continue?")
+
+            $("#notification-rmtask-dialog").dialog({
+                modal: true,
+                draggable: false,
+                buttons: {
+                    Delete: function () {
+                        var deleteTaskDTO = {
+                            listBoardID: parseInt(selectedListBoard.id),
+                            taskListID: parseInt(TaskListID),
+                            taskID: parseInt(TaskID),
+                        }
+                        $.ajax({
+                            type: "DELETE",
+                            url: "http://localhost:5000/api/ListBoard/RemoveTask",
+                            data: JSON.stringify(deleteTaskDTO),
+                            contentType: "application/json",
+                            headers: {
+                                Authorization: `Bearer ${authToken}`
+                            },
+                            dataType: "json",
+                            success: (data) => {
+                                $(this).dialog("close");
+                            },
+                            error: (jqXHR, textStatus, errorThrown) => {
+                                console.log("Error deleting the task:\n" + errorThrown);
+                            }
+                        });
+                    }
+                },
+            });
+        }
+
+
+        function SortByDueDate(TaskListID, sortTerm) {
+            var sortTasksByDueDateDTO = {
+                listBoardID: parseInt(selectedListBoard.id),
+                taskListID: parseInt(TaskListID),
+                sortTerm: sortTerm
+            }
+
+            $.ajax({
+                type: "PUT",
+                url: "http://localhost:5000/api/ListBoard/SortTasksByDueDate",
+                data: JSON.stringify(sortTasksByDueDateDTO),
+                contentType: "application/json",
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                },
+                dataType: "json",
+                success: (data) => {
+                    console.log("Good!");
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.log("Error sorting tasks:\n" + errorThrown);
+                }
+            });
+        }
+
+        function RemoveTask(TaskListID) {
+            var removeTaskListDTO = {
+                listBoardID: parseInt(selectedListBoard.id),
+                taskListID: parseInt(TaskListID),
+            }
+
+            $.ajax({
+                type: "DELETE",
+                url: "http://localhost:5000/api/ListBoard/RemoveTaskList",
+                data: JSON.stringify(removeTaskListDTO),
+                contentType: "application/json",
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                },
+                dataType: "json",
+                success: (data) => {
+                    console.log("Good!");
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.log("Error warning deleting a tasklist but succeeded:\n" + errorThrown);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $(".RegisterPage").hide();
+            // Initially, hide login and content divs
+            $(".LoginPage").hide();
+            $(".ContentPage").hide();
+            verifyUser();
+            fetchListBoardData();
+            $("#workspaceDropdownContent").on('click', 'span', function () {
+                const listboard = $(this).data('listboard');
+                changeSelectedListBoard(listboard);
+                $("#workspaceDropdownContent").toggle();
+            });
+            // Add a click event handler for the sidebar button
+            $('#sidebarButton').on('click', function () {
+                var sidebar = $('.sidebar');
+                if (sidebar.hasClass('show')) {
+                    sidebar.removeClass('show').addClass('hide');
+                    $('.content').css('margin-left', '50px');
+                    $('.listboard-title').css('border-bottom', 'none');
+                    $('.members-list').css('border-bottom', 'none');
+                    $('.add-members').css('display', 'none');
+                    $('.remove-member-icon').css('display', 'none');
+                    $('.add-tasklist').css('display', 'none');
+                } else {
+                    sidebar.removeClass('hide').addClass('show');
+                    $('.content').css('margin-left', '250px');
+                    $('.listboard-title').css('border-bottom', '#b4a7a7 2px solid');
+                    $('.members-list').css('border-bottom', '#b4a7a7 1px solid');
+                    $('.add-members').css('display', 'inline-block');
+                    $('.remove-member-icon').css('display', 'inline-block');
+                    $('.add-tasklist').css('display', 'block');
+                }
+            });
+
+
+            // Open the dialog on button click
+            $(".add-members").on('click', function () {
+                $("#add-members-dialog").dialog({
+                    modal: true,
+                    draggable: false,
+                    buttons: {
+                        Add: function () {
+                            var BuyerID = $("#dialog-message").val();
+                            var ListBoardID = parseInt(selectedListBoard.id);
+                            var addUserDTO = {
+                                listBoardID: ListBoardID,
+                                buyerID: BuyerID
+                            }
+
+                            if (BuyerID !== "") {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "http://localhost:5000/api/ListBoard/AddUsers",
+                                    data: JSON.stringify(addUserDTO),
+                                    contentType: "application/json",
+                                    headers: {
+                                        Authorization: `Bearer ${authToken}`
+                                    },
+                                    dataType: "json",
+                                    success: (data) => {
+                                        $(this).dialog("close");
+                                        $("#dialog-message").val("");
+                                    },
+                                    error: (jqXHR, textStatus, errorThrown) => {
+                                        alert("Error adding member:\n" + errorThrown);
+                                        $("#dialog-message").val("");
+                                    }
+                                });
+                            } else {
+                                alert("Member email cannot be empty");
+                            }
+                        }
+                    },
+                });
+            });
+
+            $('.btnLogout').on('click', function () {
+                localStorage.removeItem('user');
+                localStorage.removeItem('selectedListBoard');
+                user = null;
+                authToken = null;
+                listBoards = null;
+                selectedListBoard = null;
+                verifyUser();
+            })
+
+            $("#workspaceDropdownContent").hide();
+
+            // Handle click on the "Workspaces" div
+            $("#workspaceDropdownHeader").on('click', function (e) {
+                e.stopPropagation();
+                var dropdownContent = $("#workspaceDropdownContent");
+                if (dropdownContent.is(":visible")) {
+                    dropdownContent.hide();
+                } else {
+                    dropdownContent.show();
+                }
+            });
+
+
+            // Close the dropdown when clicking anywhere else on the document
+            $(document).on('click', function (event) {
+                var dropdownContent = $("#workspaceDropdownContent");
+                if (!dropdownContent.is(event.target) && dropdownContent.has(event.target).length === 0) {
+                    dropdownContent.hide();
+                }
+            });
+
+            //Change tasks div height based on overflow-x for task-list-container
+            function adjustTasksHeight() {
+                $('.task-list').each(function () {
+                    const taskList = $(this);
+                    const tasks = taskList.find('.tasks');
+                    const taskListWrapper = taskList.closest('.task-list-wrapper'); // Select the closest .task-list-wrapper element
+                    const taskListContainer = $('.task-list-container')
+
+                    if (taskListWrapper.width() > taskListContainer.width()) {
+                        // There is overflow-x within the .task-list-wrapper
+                        const maxHeight = window.innerHeight - taskList.offset().top - taskList.find('.task-list-end').outerHeight(true) - 105;
+                        tasks.css('max-height', maxHeight + 'px');
+                    } else {
+                        // No overflow-x within the .task-list-wrapper
+                        const maxHeight = window.innerHeight - taskList.offset().top - taskList.find('.task-list-end').outerHeight(true) - 85;
+                        tasks.css('max-height', maxHeight + 'px');
+                    }
+                });
+            }
+
+            // Call the function initially and whenever the window is resized
+            adjustTasksHeight();
+            $(window).resize(adjustTasksHeight);
+
+
+        });
+    </script>
+</head>
+
+<body>
+    <div class="LoginPage" style="display: none;">
+        <div class="LoginContent">
+            <div class="loginImg">
+                <img src="Images/Login_Icon.png" alt="login-icon">
+            </div>
+            <h1>Login</h1>
+            <div class="form-group">
+                <label for="Lusername">Username:</label>
+            </div>
+            <input class="loginInputs" type="text" id="Lusername" placeholder="Enter your username">
+            <div class="form-group">
+                <label for="Lpassword">Password:</label>
+            </div>
+            <input class="loginInputs" type="password" id="Lpassword" placeholder="Enter your password">
+            <button class="login-button" onclick="login()">Login</button>
+            <p>Don't have an account yet? <strong><a class="registerbtn" onclick="Register()">Register here</a></strong>
+            </p>
+            <p class="error-message" id="L-error-message"></p>
+        </div>
+    </div>
+    <div class="RegisterPage" style="display: none;">
+        <div class="RegisterContent">
+            <div class="loginImg">
+                <img src="Images/Register_Icon.png" alt="login-icon">
+            </div>
+            <h1>Register</h1>
+            <div class="form-group">
+                <label for="username">Email:</label>
+            </div>
+            <input class="registerInputs" type="text" id="Remail" placeholder="Enter your email">
+            <div class="form-group">
+                <label for="username">Username:</label>
+            </div>
+            <input class="registerInputs" type="text" id="Rusername" placeholder="Enter your username">
+            <div class="form-group">
+                <label for="password">Password:</label>
+            </div>
+            <input class="registerInputs" type="password" id="Rpassword" placeholder="Enter your password">
+            <button class="register-button" onclick="register()">Register</button>
+            <p>Already had an account? <strong><a class="loginbtn" onclick="Login()">Login here</a></strong>
+            </p>
+            <p class="error-message" id="R-error-message"></p>
+        </div>
+    </div>
+    <div class="ContentPage" style="display: none;">
+        <div class="navbar">
+            <div class="nav-title">
+                <div>
+                    <img src="/client/Images/logo.png" alt="logo">
+                </div>
+                <div style="margin-right: 5px;"> JTask</div>
+                <div class="workspace-dropdown-container" id="workspaceDropdownContainer">
+                    <div class="workspace-dropdown-header" id="workspaceDropdownHeader">
+                        Workspaces
+                        <span>&#9660;</span>
+                    </div>
+
+                    <div class="workspace-dropdown-content" id="workspaceDropdownContent">
+                    </div>
+                </div>
+            </div>
+            <div class="user-logs">
+                <span class="username">
+                </span>
+                <span class="btnLogout">
+                    Logout
+                </span>
+            </div>
+        </div>
+        <div id="notification-dialog" title="Notification">
+            <p id="notification-message"></p>
+        </div>
+        <div class="content-container">
+            <div class="sidebar">
+                <div class="listboard-title">
+                    <div class="title-text-container">
+                        <div class="title-text">No Listboard</div>
+                        <div class="unjoin-listboard">
+                        </div>
+                    </div>
+                    <div class="sidebar-button" id="sidebarButton">&#9776;</div>
+                </div>
+                <div class="listboard-members">
+                    <span>Listboard members</span>
+                    <div class="add-members">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                </div>
+                <!-- Sidebar content -->
+                <ul class="members-list">
+                </ul>
+                <div class="add-tasklist" onclick="AddTaskList()"><i class="fa-solid fa-plus"></i> Add TaskList</div>
+                <div style="display: flex; justify-content: center; align-items: center; padding: 10px 0;">- Inspired by
+                    Trello - </div>
+            </div>
+
+            <!--All custom dialogs-->
+            <div id="add-members-dialog" title="Add members to listboard">
+                <label for="dialog-message">Member email:</label>
+                <input type="text" id="dialog-message">
+            </div>
+
+            <div id="add-tasks-dialog" title="Add a task to tasklist">
+                <label for="dialog-task-message">Description:</label>
+                <input type="text" id="dialog-task-message">
+                <label for="dialog-task-message">Due Date:</label>
+                <input type="text" id="dialog-task-datepicker" readonly>
+            </div>
+
+            <div id="add-listboard-dialog" title="Add new listboard">
+                <label for="dialog-lb-message">ListBoard Name:</label>
+                <input type="text" id="dialog-lb-message">
+            </div>
+
+            <div id="add-tasklist-dialog" title="Add new tasklist">
+                <label for="dialog-tl-message">Tasklist Name:</label>
+                <input type="text" id="dialog-tl-message">
+            </div>
+
+
+            <div id="notification-rm-dialog" title="Warning, deleting!!!">
+                <p id="notification-rm-message"></p>
+            </div>
+
+            <div id="notification-rm2-dialog" title="Warning!!!">
+                <p id="notification-rm2-message"></p>
+            </div>
+
+            <div id="edit-tasks-dialog" title="Edit the task">
+                <label for="dialog-edit-task-message">Description:</label>
+                <input type="text" id="dialog-edit-task-message">
+                <label for="dialog-edit-task-message">Due Date:</label>
+                <input type="text" id="dialog-edit-task-datepicker" readonly>
+            </div>
+
+            <div id="notification-rmtask-dialog" title="Warning, deleting task!!!">
+                <p id="notification-rmtask-message"></p>
+            </div>
+            <!--Custom dialogs end-->
+
+            <div class="content">
+                <!-- Task list container -->
+                <div class="task-list-container">
+                    <!-- Task List 1 -->
+                    <div class="task-list-wrapper">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
